@@ -1,14 +1,16 @@
 package com.israel.agendamento.model;
 
+import com.israel.agendamento.enums.StatusAgendamento;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 public class Agendamento {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String nome;
 
@@ -16,10 +18,13 @@ public class Agendamento {
 
     private LocalDateTime dataHora;
 
+    @Enumerated(EnumType.STRING)
+    private StatusAgendamento status;
+
     public Agendamento() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -46,4 +51,13 @@ public class Agendamento {
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
     }
+    public StatusAgendamento getStatus() {
+        return status;
+    }
+    public void setStatus(StatusAgendamento status) {
+        this.status = status;
+    }
+
 }
+
+

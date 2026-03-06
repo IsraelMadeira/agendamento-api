@@ -11,6 +11,7 @@ export function AppointmentsPage() {
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [editingId, setEditingId] = useState<string | number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const [clienteId, setClienteId] = useState('')
@@ -54,24 +55,64 @@ export function AppointmentsPage() {
 
     try {
       setSubmitting(true)
-      await appointmentService.create({
+      const payload = {
         clienteId: Number(clienteId),
         servico,
-        dataHora: new Date(dataHora).toISOString(),
+        // datetime-local is already local time; send it without timezone conversion.
+        dataHora: toLocalDateTimePayload(dataHora),
         observacoes: observacoes || undefined
-      })
-      setServico('')
-      setDataHora('')
-      setObservacoes('')
+      }
+
+      if (editingId) {
+        await appointmentService.update(editingId, payload)
+      } else {
+        await appointmentService.create(payload)
+      }
+
+      resetForm()
       await loadPage()
     } catch {
-      setError('Erro ao criar agendamento. Confirme os dados e tente novamente.')
+      setError('Erro ao salvar agendamento. Confirme os dados e tente novamente.')
     } finally {
       setSubmitting(false)
     }
   }
 
-  async function handleStatusChange(id: number, status: Appointment['status']) {
+  function handleEdit(item: Appointment) {
+    setEditingId(item.id)
+    setClienteId(String(item.clienteId ?? ''))
+    setServico(item.servico ?? '')
+    setDataHora(dayjs(item.dataHora).format('YYYY-MM-DDTHH:mm'))
+    setObservacoes(item.observacoes ?? '')
+    setError(null)
+  }
+
+  async function handleDelete(id: string | number) {
+    const confirmed = window.confirm('Deseja realmente excluir este agendamento?')
+    if (!confirmed) {
+      return
+    }
+
+    try {
+      await appointmentService.delete(id)
+      if (editingId === id) {
+        resetForm()
+      }
+      await loadPage()
+    } catch {
+      setError('Nao foi possivel excluir este agendamento.')
+    }
+  }
+
+  function resetForm() {
+    setEditingId(null)
+    setClienteId('')
+    setServico('')
+    setDataHora('')
+    setObservacoes('')
+  }
+
+  async function handleStatusChange(id: string | number, status: Appointment['status']) {
     try {
       await appointmentService.updateStatus(id, status)
       await loadPage()
@@ -84,7 +125,7 @@ export function AppointmentsPage() {
     <div className="page-grid">
       <article className="card">
         <header>
-          <h3>Novo agendamento</h3>
+          <h3>{editingId ? 'Editar agendamento' : 'Novo agendamento'}</h3>
         </header>
 
         <form className="form-grid" onSubmit={handleSubmit}>
@@ -127,8 +168,14 @@ export function AppointmentsPage() {
           {error ? <div className="alert-error">{error}</div> : null}
 
           <button type="submit" disabled={submitting}>
-            {submitting ? 'Salvando...' : 'Salvar agendamento'}
+            {submitting ? 'Salvando...' : editingId ? 'Atualizar agendamento' : 'Salvar agendamento'}
           </button>
+
+          {editingId ? (
+            <button type="button" className="ghost-button" onClick={resetForm}>
+              Cancelar edicao
+            </button>
+          ) : null}
         </form>
       </article>
 
@@ -176,6 +223,12 @@ export function AppointmentsPage() {
                         <button type="button" onClick={() => handleStatusChange(item.id, 'CANCELADO')}>
                           Cancelar
                         </button>
+                        <button type="button" className="ghost-button" onClick={() => handleEdit(item)}>
+                          Editar
+                        </button>
+                        <button type="button" className="danger-button" onClick={() => handleDelete(item.id)}>
+                          Excluir
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -187,4 +240,11 @@ export function AppointmentsPage() {
       </article>
     </div>
   )
+}
+
+function toLocalDateTimePayload(value: string): string {
+  if (value.length === 16) {
+    return `${value}:00`
+  }
+  return value
 }

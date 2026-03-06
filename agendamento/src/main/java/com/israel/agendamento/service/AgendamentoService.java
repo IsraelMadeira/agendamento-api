@@ -2,7 +2,6 @@ package com.israel.agendamento.service;
 
 import com.israel.agendamento.controller.AgendamentoRequestDTO;
 import com.israel.agendamento.dto.AgendamentoFrontResponseDTO;
-import com.israel.agendamento.dto.AgendamentoResponseDTO;
 import com.israel.agendamento.enums.StatusAgendamento;
 import com.israel.agendamento.model.Agendamento;
 import jakarta.validation.Valid;
@@ -16,5 +15,6 @@ public interface AgendamentoService {
     Agendamento createAgendamento(Agendamento agendamento);
     void deleteAgendamento(UUID id);
     AgendamentoFrontResponseDTO criar(@Valid AgendamentoRequestDTO dto);
+    AgendamentoFrontResponseDTO atualizar(UUID id, @Valid AgendamentoRequestDTO dto);
     AgendamentoFrontResponseDTO atualizarStatus(UUID id, StatusAgendamento status);
 }

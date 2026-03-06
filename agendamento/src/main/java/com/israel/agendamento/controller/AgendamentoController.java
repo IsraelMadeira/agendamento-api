@@ -1,5 +1,4 @@
 package com.israel.agendamento.controller;
-import com.israel.agendamento.dto.AgendamentoResponseDTO;
 import com.israel.agendamento.dto.AgendamentoFrontResponseDTO;
 import com.israel.agendamento.dto.AgendamentoStatusUpdateDTO;
 import com.israel.agendamento.model.Agendamento;
@@ -50,6 +49,14 @@ public class AgendamentoController {
         return ResponseEntity
                 .created(location)
                 .body(response);
+    }
+
+    @PutMapping("/{id}")
+    public AgendamentoFrontResponseDTO atualizar(
+            @PathVariable UUID id,
+            @Valid @RequestBody AgendamentoRequestDTO dto
+    ) {
+        return agendamentoService.atualizar(id, dto);
     }
 
     @PatchMapping("/{id}/status")

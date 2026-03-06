@@ -19,7 +19,16 @@ export const appointmentService = {
     return data
   },
 
-  async updateStatus(id: number, status: Appointment['status']): Promise<Appointment> {
+  async update(id: string | number, payload: AppointmentPayload): Promise<Appointment> {
+    const { data } = await http.put<Appointment>(`/agendamentos/${id}`, payload)
+    return data
+  },
+
+  async delete(id: string | number): Promise<void> {
+    await http.delete(`/agendamentos/${id}`)
+  },
+
+  async updateStatus(id: string | number, status: Appointment['status']): Promise<Appointment> {
     const { data } = await http.patch<Appointment>(`/agendamentos/${id}/status`, { status })
     return data
   }

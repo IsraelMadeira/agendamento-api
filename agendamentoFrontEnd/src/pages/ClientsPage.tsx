@@ -39,6 +39,11 @@ export function ClientsPage() {
       return
     }
 
+    if (telefone.length !== 11) {
+      setError('Telefone deve conter exatamente 11 numeros, incluindo DDD.')
+      return
+    }
+
     try {
       setSubmitting(true)
       await clientService.create({ nome, telefone, email: email || undefined, observacoes: observacoes || undefined })
@@ -68,8 +73,11 @@ export function ClientsPage() {
           <input
             id="telefone"
             value={telefone}
-            onChange={(event) => setTelefone(event.target.value)}
-            placeholder="(00) 00000-0000"
+            onChange={(event) => setTelefone(event.target.value.replace(/\D/g, '').slice(0, 11))}
+            placeholder="11999999999"
+            maxLength={11}
+            inputMode="numeric"
+            pattern="[0-9]{11}"
           />
 
           <label htmlFor="email">Email</label>

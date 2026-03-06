@@ -2,7 +2,6 @@ package com.israel.agendamento.service;
 
 import com.israel.agendamento.controller.AgendamentoRequestDTO;
 import com.israel.agendamento.dto.AgendamentoFrontResponseDTO;
-import com.israel.agendamento.dto.AgendamentoResponseDTO;
 import com.israel.agendamento.enums.StatusAgendamento;
 import com.israel.agendamento.model.Agendamento;
 import com.israel.agendamento.model.Cliente;
@@ -73,6 +72,28 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         agendamento.setDataHora(dto.getDataHora());
         agendamento.setObservacoes(dto.getObservacoes());
         agendamento.setStatus(StatusAgendamento.PENDENTE);
+
+        Agendamento saved = agendamentoRepository.save(agendamento);
+        return toFrontResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public AgendamentoFrontResponseDTO atualizar(UUID id, AgendamentoRequestDTO dto) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+
+        if (dto.getClienteId() != null) {
+            Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+            agendamento.setClienteId(cliente.getId());
+            agendamento.setNome(cliente.getNome());
+            agendamento.setEmail(cliente.getEmail());
+        }
+
+        agendamento.setServico(dto.getServico());
+        agendamento.setDataHora(dto.getDataHora());
+        agendamento.setObservacoes(dto.getObservacoes());
 
         Agendamento saved = agendamentoRepository.save(agendamento);
         return toFrontResponse(saved);

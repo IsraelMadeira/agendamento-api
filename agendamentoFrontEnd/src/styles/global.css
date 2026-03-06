@@ -241,6 +241,10 @@ td {
   font-size: 0.82rem;
 }
 
+.actions-inline .danger-button {
+  background: linear-gradient(125deg, #b72d3f, #8f1d2c);
+}
+
 .status-badge {
   display: inline-flex;
   font-size: 0.77rem;

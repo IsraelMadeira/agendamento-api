@@ -34,7 +34,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="login-screen">
+    <div className="login-screen login-screen--fluid">
       <section className="login-card">
         <h1>AgendaFlow</h1>
         <p>Plataforma inteligente para operacao de agendamentos.</p>

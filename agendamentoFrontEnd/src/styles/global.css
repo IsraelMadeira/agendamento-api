@@ -13,10 +13,11 @@ body,
 body {
   font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
   background:
-    radial-gradient(circle at 12% 8%, rgba(229, 127, 42, 0.2), transparent 40%),
-    radial-gradient(circle at 88% 18%, rgba(19, 121, 91, 0.22), transparent 30%),
+    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--accent-2) 22%, transparent), transparent 40%),
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 30%),
     var(--bg);
   color: var(--text);
+  transition: background 0.35s ease, color 0.25s ease;
 }
 
 h1,
@@ -84,12 +85,13 @@ button:disabled {
 }
 
 .sidebar {
-  background: linear-gradient(190deg, #122a20, #0f1f17);
+  background: linear-gradient(190deg, var(--sidebar-start), var(--sidebar-end));
   color: #d7f5df;
   padding: 2rem 1.3rem;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
+  transition: background 0.3s ease;
 }
 
 .sidebar h1 {
@@ -113,7 +115,6 @@ button:disabled {
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   display: grid;
-  gap: 0.5rem;
 }
 
 .sidebar-tools span {
@@ -121,8 +122,79 @@ button:disabled {
   color: #b7dfc4;
 }
 
+.sidebar-tools .p-accordion,
+.sidebar-tools .p-accordion-tab,
+.sidebar-tools .p-accordion-header,
+.sidebar-tools .p-accordion-content {
+  background: transparent;
+  border: 0;
+}
+
+.sidebar-tools .p-accordion-header-link {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  color: #defce7;
+  padding: 0.9rem;
+  box-shadow: none;
+}
+
+.sidebar-tools .p-accordion-content {
+  padding: 0.85rem 0 0;
+}
+
+.theme-toggle-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.theme-toggle-header strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #defce7;
+}
+
+.theme-toggle-header small {
+  color: #9ccfb3;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.theme-accent-chip {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  flex-shrink: 0;
+}
+
+.theme-toggle-body {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .sidebar-tools .p-colorpicker {
   width: 100%;
+}
+
+.sidebar-tools .p-dropdown {
+  width: 100%;
+}
+
+.sidebar-tools .p-inputtext,
+.sidebar-tools .p-dropdown-label,
+.sidebar-tools .p-dropdown-trigger {
+  background: rgba(255, 255, 255, 0.08);
+  color: #defce7;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.sidebar-tools .p-dropdown-panel .p-dropdown-items {
+  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
 }
 
 .sidebar-tools .p-colorpicker-preview {

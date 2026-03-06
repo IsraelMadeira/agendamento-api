@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+:root {
+  --bg: #f4f7f3;
+  --panel: #ffffff;
+  --text: #182218;
+  --muted: #5c705c;
+  --line: #d5e0d4;
+  --accent: #13795b;
+  --accent-2: #e57f2a;
+  --danger: #bf2f45;
+  --success: #1b8f53;
+  --shadow: 0 10px 30px rgba(19, 121, 91, 0.1);
+}

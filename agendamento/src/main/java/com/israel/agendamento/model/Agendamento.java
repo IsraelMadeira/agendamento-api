@@ -16,6 +16,12 @@ public class Agendamento {
 
     private String email;
 
+    private Long clienteId;
+
+    private String servico;
+
+    private String observacoes;
+
     private LocalDateTime dataHora;
 
     @Enumerated(EnumType.STRING)
@@ -42,6 +48,30 @@ public class Agendamento {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getClienteId() {
+        return clienteId;
+    }
+
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
+    }
+
+    public String getServico() {
+        return servico;
+    }
+
+    public void setServico(String servico) {
+        this.servico = servico;
+    }
+
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
     }
 
     public LocalDateTime getDataHora() {

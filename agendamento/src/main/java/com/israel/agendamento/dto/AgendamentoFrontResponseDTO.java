@@ -1,28 +1,26 @@
-package com.israel.agendamento.controller;
+package com.israel.agendamento.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.israel.agendamento.enums.StatusAgendamento;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-public class AgendamentoRequestDTO {
+public class AgendamentoFrontResponseDTO {
+    private UUID id;
     private Long clienteId;
-
     private String clienteNome;
-
-    private String email;
-
-    @NotBlank
     private String servico;
-
-    @NotNull
-    @JsonProperty("dataHora")
     private LocalDateTime dataHora;
-
+    private StatusAgendamento status;
     private String observacoes;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public Long getClienteId() {
         return clienteId;
@@ -40,14 +38,6 @@ public class AgendamentoRequestDTO {
         this.clienteNome = clienteNome;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getServico() {
         return servico;
     }
@@ -62,6 +52,14 @@ public class AgendamentoRequestDTO {
 
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
+    }
+
+    public StatusAgendamento getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusAgendamento status) {
+        this.status = status;
     }
 
     public String getObservacoes() {

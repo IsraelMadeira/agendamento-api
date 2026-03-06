@@ -1,5 +1,7 @@
 package com.israel.agendamento.controller;
 import com.israel.agendamento.dto.AgendamentoResponseDTO;
+import com.israel.agendamento.dto.AgendamentoFrontResponseDTO;
+import com.israel.agendamento.dto.AgendamentoStatusUpdateDTO;
 import com.israel.agendamento.model.Agendamento;
 import com.israel.agendamento.service.AgendamentoService;
 import jakarta.validation.Valid;
@@ -24,7 +26,7 @@ public class AgendamentoController {
     }
 
     @GetMapping
-    public List<Agendamento> findAll() {
+    public List<AgendamentoFrontResponseDTO> findAll() {
         return agendamentoService.listAgendamentos();
     }
 
@@ -34,10 +36,10 @@ public class AgendamentoController {
     }
 
     @PostMapping
-    public ResponseEntity<AgendamentoResponseDTO> criar(
+    public ResponseEntity<AgendamentoFrontResponseDTO> criar(
             @Valid @RequestBody AgendamentoRequestDTO dto) {
 
-        AgendamentoResponseDTO response = agendamentoService.criar(dto);
+        AgendamentoFrontResponseDTO response = agendamentoService.criar(dto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -48,6 +50,14 @@ public class AgendamentoController {
         return ResponseEntity
                 .created(location)
                 .body(response);
+    }
+
+    @PatchMapping("/{id}/status")
+    public AgendamentoFrontResponseDTO atualizarStatus(
+            @PathVariable UUID id,
+            @Valid @RequestBody AgendamentoStatusUpdateDTO dto
+    ) {
+        return agendamentoService.atualizarStatus(id, dto.getStatus());
     }
 
     @DeleteMapping("/{id}")

@@ -7,6 +7,7 @@ export function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const [nome, setNome] = useState('')
@@ -46,24 +47,62 @@ export function ClientsPage() {
 
     try {
       setSubmitting(true)
-      await clientService.create({ nome, telefone, email: email || undefined, observacoes: observacoes || undefined })
-      setNome('')
-      setTelefone('')
-      setEmail('')
-      setObservacoes('')
+      const payload = { nome, telefone, email: email || undefined, observacoes: observacoes || undefined }
+
+      if (editingId) {
+        await clientService.update(editingId, payload)
+      } else {
+        await clientService.create(payload)
+      }
+
+      resetForm()
       await loadClients()
     } catch {
-      setError('Erro ao cadastrar cliente. Tente novamente em instantes.')
+      setError('Erro ao salvar cliente. Tente novamente em instantes.')
     } finally {
       setSubmitting(false)
     }
+  }
+
+  function handleEdit(client: Client) {
+    setEditingId(client.id)
+    setNome(client.nome)
+    setTelefone(client.telefone)
+    setEmail(client.email ?? '')
+    setObservacoes(client.observacoes ?? '')
+    setError(null)
+  }
+
+  async function handleDelete(id: number) {
+    const confirmed = window.confirm('Deseja realmente excluir este cliente?')
+    if (!confirmed) {
+      return
+    }
+
+    try {
+      await clientService.delete(id)
+      if (editingId === id) {
+        resetForm()
+      }
+      await loadClients()
+    } catch {
+      setError('Nao foi possivel excluir o cliente.')
+    }
+  }
+
+  function resetForm() {
+    setEditingId(null)
+    setNome('')
+    setTelefone('')
+    setEmail('')
+    setObservacoes('')
   }
 
   return (
     <div className="page-grid">
       <article className="card">
         <header>
-          <h3>Novo cliente</h3>
+          <h3>{editingId ? 'Editar cliente' : 'Novo cliente'}</h3>
         </header>
         <form className="form-grid" onSubmit={handleSubmit}>
           <label htmlFor="nome">Nome</label>
@@ -89,8 +128,14 @@ export function ClientsPage() {
           {error ? <div className="alert-error">{error}</div> : null}
 
           <button type="submit" disabled={submitting}>
-            {submitting ? 'Salvando...' : 'Cadastrar cliente'}
+            {submitting ? 'Salvando...' : editingId ? 'Atualizar cliente' : 'Cadastrar cliente'}
           </button>
+
+          {editingId ? (
+            <button type="button" className="ghost-button" onClick={resetForm}>
+              Cancelar edicao
+            </button>
+          ) : null}
         </form>
       </article>
 
@@ -115,15 +160,26 @@ export function ClientsPage() {
                   <th>Telefone</th>
                   <th>Email</th>
                   <th>Observacoes</th>
+                  <th>Acoes</th>
                 </tr>
               </thead>
               <tbody>
                 {clients.map((client) => (
                   <tr key={client.id}>
                     <td>{client.nome}</td>
-                    <td>{client.telefone}</td>
+                    <td>{formatPhone(client.telefone)}</td>
                     <td>{client.email ?? '-'}</td>
                     <td>{client.observacoes ?? '-'}</td>
+                    <td>
+                      <div className="actions-inline">
+                        <button type="button" className="ghost-button" onClick={() => handleEdit(client)}>
+                          Editar
+                        </button>
+                        <button type="button" className="danger-button" onClick={() => handleDelete(client.id)}>
+                          Excluir
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -133,4 +189,18 @@ export function ClientsPage() {
       </article>
     </div>
   )
+}
+
+function formatPhone(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 11)
+  if (digits.length < 3) {
+    return digits
+  }
+  const ddd = digits.slice(0, 2)
+  const first = digits.slice(2, 7)
+  const last = digits.slice(7, 11)
+  if (digits.length <= 7) {
+    return `(${ddd}) ${digits.slice(2)}`
+  }
+  return `(${ddd}) ${first}-${last}`
 }

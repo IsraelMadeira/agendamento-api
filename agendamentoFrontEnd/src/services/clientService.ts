@@ -17,5 +17,14 @@ export const clientService = {
   async create(payload: ClientPayload): Promise<Client> {
     const { data } = await http.post<Client>('/clientes', payload)
     return data
+  },
+
+  async update(id: number, payload: ClientPayload): Promise<Client> {
+    const { data } = await http.put<Client>(`/clientes/${id}`, payload)
+    return data
+  },
+
+  async delete(id: number): Promise<void> {
+    await http.delete(`/clientes/${id}`)
   }
 }

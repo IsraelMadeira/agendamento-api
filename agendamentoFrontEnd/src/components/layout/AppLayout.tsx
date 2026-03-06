@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { CalendarClock, House, LogOut, Users } from 'lucide-react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { HexColorPicker } from 'react-colorful'
 import { useAuth } from '../../context/AuthContext'
 import { env } from '../../config/env'
 
@@ -12,6 +14,12 @@ const navItems = [
 export function AppLayout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [bgColor, setBgColor] = useState(() => localStorage.getItem('agendamento_bg_color') ?? '#f4f7f3')
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--bg', bgColor)
+    localStorage.setItem('agendamento_bg_color', bgColor)
+  }, [bgColor])
 
   function handleLogout() {
     logout()
@@ -37,6 +45,12 @@ export function AppLayout() {
             )
           })}
         </nav>
+
+        <section className="sidebar-tools">
+          <span>Cor do fundo</span>
+          <HexColorPicker color={bgColor} onChange={setBgColor} />
+          <small>{bgColor.toUpperCase()}</small>
+        </section>
       </aside>
 
       <main className="content">
